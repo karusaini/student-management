@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { db, auth } from "@/utils/firebase";
 import { Plus, Eye, Edit, Trash2 } from "lucide-react";
 import StudentModal from "@/components/studentModal";
@@ -16,21 +22,22 @@ export default function StudentsPage() {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "students"));
-        const studentData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setStudents(studentData);
-      } catch (error) {
-        console.error("Error fetching students:", error);
-      }
-    };
+  // Function to fetch students from Firestore
+  const fetchStudents = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "students"));
+      const studentData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setStudents(studentData);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    }
+  };
 
-    fetchStudents();
+  useEffect(() => {
+    fetchStudents(); // Initial fetch
   }, []);
 
   useEffect(() => {
@@ -68,6 +75,22 @@ export default function StudentsPage() {
       setStudents(students.filter((student) => student.id !== studentId));
     } catch (error) {
       console.error("Error deleting student:", error);
+    }
+  };
+
+  const handleUpdateStudent = async (updatedStudent) => {
+    try {
+      const studentRef = doc(db, "students", updatedStudent.id);
+      await updateDoc(studentRef, updatedStudent); // Update student in Firestore
+      setStudents((prevStudents) =>
+        prevStudents.map((student) =>
+          student.id === updatedStudent.id ? updatedStudent : student
+        )
+      );
+      setIsEditModalOpen(false); // Close the modal after update
+      fetchStudents(); // Refresh the student list after update
+    } catch (error) {
+      console.error("Error updating student:", error);
     }
   };
 
@@ -156,14 +179,14 @@ export default function StudentsPage() {
         {isModalOpen && (
           <StudentModal
             onClose={() => setIsModalOpen(false)}
-            refreshStudents={() => fetchStudents()}
+            refreshStudents={fetchStudents} // Pass the fetchStudents to the modal
           />
         )}
         {isEditModalOpen && selectedStudent && (
           <EditStudentModal
             onClose={() => setIsEditModalOpen(false)}
             student={selectedStudent}
-            onUpdateStudent={() => fetchStudents()}
+            onUpdateStudent={handleUpdateStudent} // Pass the update function here
           />
         )}
       </main>
