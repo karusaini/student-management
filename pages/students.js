@@ -207,29 +207,30 @@ export default function StudentsPage() {
             refreshStudents={refreshStudents} // Pass the refresh function
           />
         )}
-
-        {/* View Modal */}
         {selectedStudentView && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-lg w-1/3 text-center">
-              <h2 className="text-xl font-bold mb-4 text-black">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+            <div className="bg-white p-4 rounded-lg shadow-lg max-w-md w-full">
+              <h2 className="text-xl font-semibold mb-4 text-center text-gray-800">
                 Student Details
               </h2>
-              <p className="text-black">
-                <strong>Name:</strong> {selectedStudentView.name}
-              </p>
-              <p className="text-black">
-                <strong>Class:</strong> {selectedStudentView.class}
-              </p>
-              <p className="text-black">
-                <strong>Section:</strong> {selectedStudentView.section}
-              </p>
-              <p className="text-black">
-                <strong>Roll Number:</strong> {selectedStudentView.rollNumber}
-              </p>
+
+              {/* Two-column layout for student data */}
+              <div className="grid grid-cols-2 gap-4">
+                {Object.keys(selectedStudentView).map((key) => (
+                  <div key={key} className="flex flex-col">
+                    <span className="font-medium text-gray-600 capitalize">
+                      {key}:
+                    </span>
+                    <span className="text-gray-800">
+                      {selectedStudentView[key]}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
               <div className="mt-4 flex justify-center">
                 <button
-                  className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800"
+                  className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 focus:outline-none"
                   onClick={() => setSelectedStudentView(null)}
                 >
                   Close
