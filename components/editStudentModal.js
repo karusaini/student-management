@@ -30,7 +30,9 @@ export default function EditStudentModal({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onUpdateStudent({ ...student, ...formData });
+    if (onUpdateStudent) {
+      onUpdateStudent({ ...student, ...formData }); // Ensure the correct object is sent
+    }
   };
 
   return (

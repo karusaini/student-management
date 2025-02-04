@@ -6,20 +6,23 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  addDoc,
 } from "firebase/firestore";
 import { db, auth } from "@/utils/firebase";
 import { Plus, Eye, Edit, Trash2 } from "lucide-react";
-import StudentModal from "@/components/studentModal";
 import EditStudentModal from "@/components/editStudentModal";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import StudentModal from "@/components/studentModal"; // Adjust the path if necessary
 
 export default function StudentsPage() {
   const [students, setStudents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedStudentView, setSelectedStudentView] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
+
   const router = useRouter();
 
   const fetchStudents = async () => {
@@ -58,13 +61,16 @@ export default function StudentsPage() {
   };
 
   const handleView = (studentId) => {
-    router.push(`/students/${studentId}`);
+    const student = students.find((student) => student.id === studentId);
+    setSelectedStudentView(student);
   };
 
   const handleEdit = (studentId) => {
     const student = students.find((student) => student.id === studentId);
-    setSelectedStudent(student);
-    setIsEditModalOpen(true);
+    if (student) {
+      setSelectedStudent(student); // Ensure selectedStudent is updated
+      setIsEditModalOpen(true);
+    }
   };
 
   const handleDelete = async (studentId) => {
@@ -86,16 +92,20 @@ export default function StudentsPage() {
         )
       );
       setIsEditModalOpen(false);
-      fetchStudents();
+      setSelectedStudent(null); // Reset the selected student
     } catch (error) {
       console.error("Error updating student:", error);
     }
   };
 
+  const refreshStudents = () => {
+    fetchStudents(); // Re-fetch the student list after adding
+  };
+
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="bg-gray-400 text-black w-full lg:w-1/5 p-6 flex flex-col justify-between">
+      <aside className="bg-black text-black w-full lg:w-1/5 p-6 flex flex-col justify-between">
         <div>
           <h2 className="text-2xl font-bold text-black flex justify-center">
             Dashboard
@@ -103,7 +113,7 @@ export default function StudentsPage() {
           <ul className="flex flex-col gap-2 mt-4 p-2">
             <li>
               <Link href="/students">
-                <button className="w-full text-left bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-black flex justify-center items-center">
+                <button className="w-full text-left bg-white hover:bg-gray-200 px-4 py-2 rounded-lg text-black flex justify-center items-center">
                   Students Page
                 </button>
               </Link>
@@ -112,7 +122,7 @@ export default function StudentsPage() {
         </div>
         <button
           onClick={handleLogout}
-          className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg mt-auto text-black"
+          className="bg-white hover:bg-gray-200 px-4 py-2 rounded-lg mt-auto text-black"
         >
           Logout
         </button>
@@ -181,19 +191,52 @@ export default function StudentsPage() {
           </table>
         </div>
 
-        {/* Modals */}
-        {isModalOpen && (
-          <StudentModal
-            onClose={() => setIsModalOpen(false)}
-            refreshStudents={fetchStudents}
-          />
-        )}
+        {/* Edit Modal */}
         {isEditModalOpen && selectedStudent && (
           <EditStudentModal
             onClose={() => setIsEditModalOpen(false)}
             student={selectedStudent}
             onUpdateStudent={handleUpdateStudent}
           />
+        )}
+
+        {/* Add Student Modal */}
+        {isModalOpen && (
+          <StudentModal
+            onClose={() => setIsModalOpen(false)}
+            refreshStudents={refreshStudents} // Pass the refresh function
+          />
+        )}
+
+        {/* View Modal */}
+        {selectedStudentView && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-6 rounded-lg w-1/3 text-center">
+              <h2 className="text-xl font-bold mb-4 text-black">
+                Student Details
+              </h2>
+              <p className="text-black">
+                <strong>Name:</strong> {selectedStudentView.name}
+              </p>
+              <p className="text-black">
+                <strong>Class:</strong> {selectedStudentView.class}
+              </p>
+              <p className="text-black">
+                <strong>Section:</strong> {selectedStudentView.section}
+              </p>
+              <p className="text-black">
+                <strong>Roll Number:</strong> {selectedStudentView.rollNumber}
+              </p>
+              <div className="mt-4 flex justify-center">
+                <button
+                  className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800"
+                  onClick={() => setSelectedStudentView(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </main>
     </div>
