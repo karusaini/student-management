@@ -22,7 +22,6 @@ export default function StudentsPage() {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const router = useRouter();
 
-  // Function to fetch students from Firestore
   const fetchStudents = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "students"));
@@ -37,7 +36,7 @@ export default function StudentsPage() {
   };
 
   useEffect(() => {
-    fetchStudents(); // Initial fetch
+    fetchStudents();
   }, []);
 
   useEffect(() => {
@@ -60,7 +59,6 @@ export default function StudentsPage() {
 
   const handleView = (studentId) => {
     router.push(`/students/${studentId}`);
-    alert(`Viewing details for ${studentId}`);
   };
 
   const handleEdit = (studentId) => {
@@ -81,45 +79,49 @@ export default function StudentsPage() {
   const handleUpdateStudent = async (updatedStudent) => {
     try {
       const studentRef = doc(db, "students", updatedStudent.id);
-      await updateDoc(studentRef, updatedStudent); // Update student in Firestore
+      await updateDoc(studentRef, updatedStudent);
       setStudents((prevStudents) =>
         prevStudents.map((student) =>
           student.id === updatedStudent.id ? updatedStudent : student
         )
       );
-      setIsEditModalOpen(false); // Close the modal after update
-      fetchStudents(); // Refresh the student list after update
+      setIsEditModalOpen(false);
+      fetchStudents();
     } catch (error) {
       console.error("Error updating student:", error);
     }
   };
 
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="bg-gray-800 text-white w-64 p-6 flex flex-col justify-between lg:fixed lg:left-0 lg:top-0 lg:h-full lg:z-10 lg:translate-x-0 transform transition-all">
-        <h2 className="text-2xl font-bold mb-8">Dashboard</h2>
-        <ul className="flex flex-col gap-4">
-          <li>
-            <Link href="/students">
-              <button className="w-full text-left bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg">
-                Students Page
-              </button>
-            </Link>
-          </li>
-        </ul>
+      <aside className="bg-gray-400 text-black w-full lg:w-1/5 p-6 flex flex-col justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-black flex justify-center">
+            Dashboard
+          </h2>
+          <ul className="flex flex-col gap-2 mt-4 p-2">
+            <li>
+              <Link href="/students">
+                <button className="w-full text-left bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-black flex justify-center">
+                  Students Page
+                </button>
+              </Link>
+            </li>
+          </ul>
+        </div>
         <button
           onClick={handleLogout}
-          className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg mt-auto"
+          className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg mt-auto text-black"
         >
           Logout
         </button>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-0 lg:ml-64 p-6 lg:p-8">
+      <main className="flex-1 p-4 lg:p-8">
         <header className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Students List</h1>
+          <h1 className="text-3xl font-bold text-black">Students List</h1>
           <button
             className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-green-500"
             onClick={() => setIsModalOpen(true)}
@@ -127,37 +129,39 @@ export default function StudentsPage() {
             <Plus /> Add Student
           </button>
         </header>
+
+        {/* Table Section */}
         <div className="overflow-x-auto">
-          <table className="table-auto w-full border-collapse border border-gray-300">
+          <table className="table-auto w-full border-collapse border border-gray-300 text-xs md:text-sm lg:text-base">
             <thead>
-              <tr className="bg-gray-100 text-gray-800">
-                <th className="border px-4 py-2">ID</th>
-                <th className="border px-4 py-2">Name</th>
-                <th className="border px-4 py-2">Class</th>
-                <th className="border px-4 py-2">Section</th>
-                <th className="border px-4 py-2">Roll Number</th>
-                <th className="border px-4 py-2">Action</th>
+              <tr className="bg-gray-100 text-black">
+                <th className="border px-2 py-1">ID</th>
+                <th className="border px-2 py-1">Name</th>
+                <th className="border px-2 py-1">Class</th>
+                <th className="border px-2 py-1">Section</th>
+                <th className="border px-2 py-1">Roll Number</th>
+                <th className="border px-2 py-1">Action</th>
               </tr>
             </thead>
             <tbody>
               {students.map((student) => (
                 <tr key={student.id} className="hover:bg-gray-50">
-                  <td className="border px-4 py-2 text-center text-gray-700">
+                  <td className="border px-2 py-1 text-center text-black">
                     {student.id}
                   </td>
-                  <td className="border px-4 py-2 text-center text-gray-700">
+                  <td className="border px-2 py-1 text-center text-black">
                     {student.name}
                   </td>
-                  <td className="border px-4 py-2 text-center text-gray-700">
+                  <td className="border px-2 py-1 text-center text-black">
                     {student.class}
                   </td>
-                  <td className="border px-4 py-2 text-center text-gray-700">
+                  <td className="border px-2 py-1 text-center text-black">
                     {student.section}
                   </td>
-                  <td className="border px-4 py-2 text-center text-gray-700">
+                  <td className="border px-2 py-1 text-center text-black">
                     {student.rollNumber}
                   </td>
-                  <td className="border px-4 py-2 flex justify-center gap-3">
+                  <td className="border px-2 py-1 text-center flex justify-center gap-2">
                     <Eye
                       className="text-blue-500 cursor-pointer"
                       onClick={() => handleView(student.id)}
@@ -176,17 +180,19 @@ export default function StudentsPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Modals */}
         {isModalOpen && (
           <StudentModal
             onClose={() => setIsModalOpen(false)}
-            refreshStudents={fetchStudents} // Pass the fetchStudents to the modal
+            refreshStudents={fetchStudents}
           />
         )}
         {isEditModalOpen && selectedStudent && (
           <EditStudentModal
             onClose={() => setIsEditModalOpen(false)}
             student={selectedStudent}
-            onUpdateStudent={handleUpdateStudent} // Pass the update function here
+            onUpdateStudent={handleUpdateStudent}
           />
         )}
       </main>
