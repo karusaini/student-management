@@ -113,7 +113,7 @@ export default function StudentsPage() {
           <ul className="flex flex-col gap-2 mt-4 p-2">
             <li>
               <Link href="/students">
-                <button className="w-full text-left bg-white hover:bg-gray-200 px-4 py-2 rounded-lg text-black flex justify-center items-center">
+                <button className="w-full text-left bg-white hover:bg-gray-200 px-4 py-2 rounded-lg text-black flex justify-center items-center font-bold">
                   Students Page
                 </button>
               </Link>
@@ -122,7 +122,7 @@ export default function StudentsPage() {
         </div>
         <button
           onClick={handleLogout}
-          className="bg-white hover:bg-gray-200 px-4 py-2 rounded-lg mt-auto text-black"
+          className="bg-white hover:bg-gray-200 px-4 py-2 rounded-lg mt-auto text-black font-bold"
         >
           Logout
         </button>
@@ -133,7 +133,7 @@ export default function StudentsPage() {
         <header className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-black">Students List</h1>
           <button
-            className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-green-500"
+            className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-green-500 font-bold"
             onClick={() => setIsModalOpen(true)}
           >
             <Plus /> Add Student
@@ -142,9 +142,9 @@ export default function StudentsPage() {
 
         {/* Table Section */}
         <div className="overflow-x-auto">
-          <table className="table-auto w-full border-collapse border border-gray-300 text-xs md:text-sm lg:text-base">
+          <table className="table-auto w-full border-collapse border border-gray-200 text-xs md:text-sm lg:text-base">
             <thead>
-              <tr className="bg-gray-400 text-black">
+              <tr className="bg-gray-300 text-black">
                 <th className="border px-2 py-1">ID</th>
                 <th className="border px-2 py-1">Name</th>
                 <th className="border px-2 py-1">Class</th>
