@@ -103,7 +103,7 @@ export default function StudentsPage() {
           <ul className="flex flex-col gap-2 mt-4 p-2">
             <li>
               <Link href="/students">
-                <button className="w-full text-left bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-black flex justify-center">
+                <button className="w-full text-left bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-black flex justify-center items-center">
                   Students Page
                 </button>
               </Link>
@@ -119,7 +119,7 @@ export default function StudentsPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 lg:p-8">
+      <main className="flex-1 p-4 lg:p-8 py-10">
         <header className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-black">Students List</h1>
           <button
@@ -134,7 +134,7 @@ export default function StudentsPage() {
         <div className="overflow-x-auto">
           <table className="table-auto w-full border-collapse border border-gray-300 text-xs md:text-sm lg:text-base">
             <thead>
-              <tr className="bg-gray-100 text-black">
+              <tr className="bg-gray-400 text-black">
                 <th className="border px-2 py-1">ID</th>
                 <th className="border px-2 py-1">Name</th>
                 <th className="border px-2 py-1">Class</th>
